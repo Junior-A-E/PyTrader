@@ -1,0 +1,60 @@
+Améliorations proposées :
+
+🚀 Idées d’améliorations
+1. Interface graphique (PyQt5 / PySide6 / Tkinter amélioré)
+
+    Pourquoi : Permettre aux utilisateurs de lancer des analyses sans toucher au code.
+
+    Idées :
+
+        Champs pour choisir le marché, l’action, les dates et les paramètres SMA.
+
+        Affichage direct du graphique interactif dans l’application.
+
+        Bouton "Exporter en Excel" et "Simuler stratégie".
+
+2. Stratégies plus avancées
+
+    Ajouter EMA (Exponential Moving Average), RSI, MACD.
+
+    Backtesting multi-stratégies avec comparaison des résultats.
+
+    Paramètres optimisables via Grid Search ou Optimisation Génétique.
+
+3. Multi-actifs et screener
+
+    Possibilité d’analyser plusieurs actions en même temps et de scanner tout un marché.
+
+    Détecter automatiquement les actions avec signal d’achat ou vente.
+
+4. API temps réel
+
+    Intégration avec Alpaca, Interactive Brokers, ou Binance pour récupérer des données en live et même passer des ordres (mode paper trading).
+
+5. Dashboard Web
+
+    Utiliser Streamlit ou Dash pour transformer le bot en une appli web interactive.
+
+    Avantage : utilisable depuis n’importe quel navigateur, sans installation locale.
+
+6. Gestion de portefeuille
+
+    Suivi de plusieurs positions en parallèle.
+
+    Affichage des courbes de performance et du drawdown.
+
+7. Nom plus orienté “produit”
+
+Si tu rajoutes interface graphique + multi-stratégies, ça devient plus qu’un simple bot SMA.
+Quelques idées de noms :
+
+    TradeScope (vue d’ensemble du marché)
+
+    MarketPilot (guide stratégique)
+
+    PyTrader (simple et efficace)
+
+    AlgoVision (analyse visuelle et algo)
+
+    QuantDesk (bureau du trader quantitatif)
+
