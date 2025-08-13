@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Script de démarrage pour l'API PyTrader
+Utilise directement FRA.py et USA.py
 """
 
 import subprocess
@@ -16,32 +17,50 @@ def check_python_version():
     print(f"✅ Python {sys.version.split()[0]} détecté")
 
 def install_dependencies():
-    """Installer les dépendances de l'API"""
-    print("📦 Installation des dépendances de l'API...")
+    """Installer les dépendances"""
+    print("📦 Installation des dépendances...")
     try:
+        # Installer flask et flask-cors pour l'API
         subprocess.run([
-            sys.executable, "-m", "pip", "install", "-r", "api/requirements.txt"
+            sys.executable, "-m", "pip", "install", "flask", "flask-cors"
+        ], check=True)
+        
+        # Installer les dépendances existantes
+        subprocess.run([
+            sys.executable, "-m", "pip", "install", "-r", "requirements.txt"
         ], check=True)
         print("✅ Dépendances installées")
     except subprocess.CalledProcessError:
         print("❌ Erreur lors de l'installation des dépendances")
         sys.exit(1)
 
+def check_scripts():
+    """Vérifier que les scripts FRA.py et USA.py existent"""
+    if not Path("FRA.py").exists():
+        print("❌ FRA.py non trouvé")
+        return False
+    if not Path("USA.py").exists():
+        print("❌ USA.py non trouvé")
+        return False
+    print("✅ Scripts FRA.py et USA.py trouvés")
+    return True
+
 def start_api():
     """Démarrer l'API Flask"""
     print("🚀 Démarrage de l'API PyTrader...")
     print("📍 URL: http://localhost:5000")
+    print("📊 Utilise directement:")
+    print("   🇫🇷 FRA.py pour la stratégie France")
+    print("   🇺🇸 USA.py pour la stratégie USA")
     print("📊 Endpoints:")
-    print("   POST /api/analyze - Analyser une action")
+    print("   POST /api/analyze - Analyser avec FRA.py ou USA.py")
     print("   POST /api/export - Exporter les transactions")
     print("   GET /api/health - Vérification de santé")
     print("\n🔄 Pour arrêter l'API, appuyez sur Ctrl+C")
     print("-" * 50)
     
     try:
-        # Changer vers le répertoire de l'API
-        os.chdir("api")
-        subprocess.run([sys.executable, "app.py"], check=True)
+        subprocess.run([sys.executable, "api_server.py"], check=True)
     except KeyboardInterrupt:
         print("\n🛑 API arrêtée par l'utilisateur")
     except subprocess.CalledProcessError as e:
@@ -56,9 +75,13 @@ def main():
     # Vérifications
     check_python_version()
     
-    # Vérifier que le dossier api existe
-    if not Path("api").exists():
-        print("❌ Dossier 'api' non trouvé")
+    # Vérifier les scripts
+    if not check_scripts():
+        sys.exit(1)
+    
+    # Vérifier que l'API server existe
+    if not Path("api_server.py").exists():
+        print("❌ api_server.py non trouvé")
         sys.exit(1)
     
     # Installer les dépendances

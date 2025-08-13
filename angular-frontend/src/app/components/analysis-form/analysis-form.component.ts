@@ -149,6 +149,7 @@ export class AnalysisFormComponent {
   };
 
   onAnalyze() {
+    console.log('📤 Envoi des paramètres d\'analyse:', this.params);
     this.analyze.emit(this.params);
   }
 }

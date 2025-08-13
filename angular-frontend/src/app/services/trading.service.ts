@@ -21,9 +21,12 @@ export class TradingService {
       strategy: params.strategy
     };
 
+    console.log('📤 Envoi vers API:', payload);
+    
     return this.http.post<TradingData>(`${this.apiUrl}/analyze`, payload)
       .pipe(
         map(data => {
+          console.log('📥 Réponse API reçue:', data);
           this.currentData = data;
           return data;
         }),
