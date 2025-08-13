@@ -44,7 +44,22 @@ import { TransactionsTableComponent } from '../components/transactions-table/tra
           <p>Analyse en cours...</p>
         </div>
 
-        <div class="empty-state" *ngIf="!tradingData && !isLoading">
+        <div class="error-state" *ngIf="errorMessage && !tradingData">
+          <div class="error-icon">⚠️</div>
+          <h3>Erreur de connexion</h3>
+          <p>{{ errorMessage }}</p>
+          <p class="error-help">Assurez-vous que l'API Flask est démarrée sur le port 5000</p>
+        </div>
+
+        <div class="fallback-notice" *ngIf="showFallbackMessage && tradingData">
+          <div class="notice-content">
+            <span class="notice-icon">ℹ️</span>
+            <span>Données simulées utilisées (API non disponible)</span>
+            <button class="notice-close" (click)="showFallbackMessage = false">×</button>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="!tradingData && !isLoading && !errorMessage">
           <div class="empty-icon">📈</div>
           <h3>Bienvenue sur PyTrader</h3>
           <p>Sélectionnez une action et une période pour commencer l'analyse</p>
@@ -137,6 +152,80 @@ import { TransactionsTableComponent } from '../components/transactions-table/tra
       margin: 0;
     }
 
+    .error-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 20px;
+      text-align: center;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #ef4444;
+    }
+
+    .error-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .error-state h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #dc2626;
+      margin: 0 0 8px 0;
+    }
+
+    .error-state p {
+      color: #64748b;
+      margin: 4px 0;
+    }
+
+    .error-help {
+      font-size: 12px;
+      color: #9ca3af;
+      font-style: italic;
+    }
+
+    .fallback-notice {
+      background: #fef3c7;
+      border: 1px solid #f59e0b;
+      border-radius: 8px;
+      margin-bottom: 24px;
+    }
+
+    .notice-content {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      gap: 8px;
+    }
+
+    .notice-icon {
+      font-size: 16px;
+    }
+
+    .notice-content span:nth-child(2) {
+      flex: 1;
+      color: #92400e;
+      font-size: 14px;
+    }
+
+    .notice-close {
+      background: none;
+      border: none;
+      color: #92400e;
+      cursor: pointer;
+      font-size: 18px;
+      padding: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     @media (max-width: 768px) {
       .dashboard-grid {
         grid-template-columns: 1fr;
@@ -151,6 +240,8 @@ import { TransactionsTableComponent } from '../components/transactions-table/tra
 export class DashboardComponent implements OnInit {
   tradingData: TradingData | null = null;
   isLoading = false;
+  errorMessage: string | null = null;
+  showFallbackMessage = false;
 
   constructor(private tradingService: TradingService) {}
 
@@ -162,15 +253,27 @@ export class DashboardComponent implements OnInit {
   onAnalyze(params: AnalysisParams) {
     this.isLoading = true;
     this.tradingData = null;
+    this.errorMessage = null;
 
     this.tradingService.analyzeStock(params).subscribe({
       next: (data) => {
         this.tradingData = data;
         this.isLoading = false;
+        console.log('✅ Analyse terminée:', data.results);
       },
       error: (error) => {
-        console.error('Erreur lors de l\'analyse:', error);
+        console.error('❌ Erreur lors de l\'analyse:', error);
+        this.errorMessage = error.message;
         this.isLoading = false;
+        
+        // Fallback vers les données simulées
+        console.log('🔄 Tentative avec données simulées...');
+        this.tradingService.analyzeStockFallback(params).subscribe({
+          next: (fallbackData) => {
+            this.tradingData = fallbackData;
+            this.showFallbackMessage = true;
+          }
+        });
       }
     });
   }
