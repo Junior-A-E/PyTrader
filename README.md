@@ -1,100 +1,61 @@
 # PyTrader 📈
 
-Un système de trading algorithmique basé sur les moyennes mobiles simples (SMA) pour analyser et simuler des stratégies de trading sur les marchés français et américain.
+Un système de **trading algorithmique** basé sur les **moyennes mobiles simples (SMA)** pour analyser et simuler des stratégies de trading sur les marchés français et américains.
+
+---
+
+## 🧠 Qu’est-ce qu’une SMA ?
+
+La **SMA (Simple Moving Average / Moyenne Mobile Simple)** est un indicateur d’analyse technique qui calcule la moyenne d’un prix (souvent le prix d’ouverture ou de clôture) sur une période donnée.  
+Elle permet de **lisser les fluctuations du marché** et d’identifier plus facilement les tendances.
+
+- **SMA courte (ex: 5 ou 10 périodes)** → suit rapidement les variations (indicateur de court terme).  
+- **SMA moyenne (ex: 30 ou 50 périodes)** → représente la tendance intermédiaire.  
+- **SMA longue (ex: 200 périodes)** → indique la tendance de fond (long terme).  
+
+👉 Exemple : Si le prix est **au-dessus de la SMA200**, on considère que l’actif est en tendance haussière de long terme.
+
+---
 
 ## 🎯 Fonctionnalités
 
-- **Analyse technique** : Utilise les moyennes mobiles simples (SMA) pour générer des signaux de trading
-- **Multi-marchés** : Support des actions françaises (Euronext Paris) et américaines (NASDAQ/NYSE)
-- **Simulation de trading** : Simule des transactions d'achat/vente avec gestion du capital
-- **Visualisation** : Graphiques interactifs des prix et indicateurs techniques
-- **Export Excel** : Génère un historique détaillé des transactions
+- **Analyse technique** : Génère des signaux d’achat/vente basés sur des SMA.  
+- **Multi-marchés** : Support des actions françaises (Euronext Paris) et américaines (NASDAQ/NYSE).  
+- **Simulation de trading** : Gestion du capital, calcul automatique des quantités, suivi des ordres, stop-loss et take-profit.  
+- **Visualisation** : Graphiques interactifs des prix et indicateurs techniques.  
+- **Export Excel** : Historique détaillé des transactions (achats/ventes).  
+
+---
 
 ## 📊 Stratégies implémentées
 
-### Stratégie France (FRA.py)
-- **Action analysée** : Airbus (AIR.PA)
-- **Indicateurs** : SMA 5, SMA 35, SMA 65 périodes
-- **Signal d'achat** : Prix > SMA_5 ET Prix > SMA_35 ET Prix > SMA_65
-- **Signal de vente** : Prix < SMA_5
+### 🇫🇷 Stratégie TripleSMA (FRA.py)
+- **Action analysée** : Airbus (AIR.PA)  
+- **Indicateurs utilisés** : SMA 20, SMA 50, SMA 200 périodes  
+- **Signal d’achat** : Prix > SMA20 > SMA50 > SMA200  
+- **Signal de vente** :
+  - SMA20 croise sous SMA50 (**sortie de tendance**)  
+  - Stop-loss : prix chute de plus de **10%** depuis l’achat  
+  - Trailing stop : prix recule de **5%** par rapport au plus haut → vente partielle (50%)  
 - **Capital initial** : 671 283 €
 
-### Stratégie USA (USA.py)
-- **Action analysée** : DexCom (DXCM)
-- **Indicateurs** : SMA 5 périodes
-- **Signal d'achat** : Prix de clôture > SMA_5
-- **Signal de vente** : Prix de clôture < SMA_5
-- **Capital initial** : 500 000 $
+### 🇺🇸 Stratégie USA (USA.py)
+- **Action analysée** : DexCom (DXCM)  
+- **Indicateurs utilisés** : SMA 10 et SMA 30 (Dual SMA)  
+- **Signal d’achat** : Croisement SMA10 au-dessus de SMA30  
+- **Signal de vente** :
+  - Croisement SMA10 sous SMA30  
+  - Stop-loss : prix chute de plus de 7% depuis l’achat  
+  - Take-profit : prix augmente de 15% depuis l’achat → vente totale  
+- **Capital initial** : 500 000 $  
+
+---
 
 ## 🛠️ Technologies utilisées
 
-- **Python 3.x**
-- **yfinance** : Récupération des données financières
-- **ta (Technical Analysis)** : Calcul des indicateurs techniques
-- **pandas** : Manipulation des données
-- **matplotlib** : Visualisation des graphiques
-- **mplcursors** : Interactivité des graphiques
+- **Python 3.x**  
+- **yfinance** : Récupération des données financières  
+- **pandas** : Manipulation des données  
+- **matplotlib** : Visualisation des graphiques  
 
-## 📦 Installation
-
-1. Clonez le repository :
-```bash
-git clone <url-du-repo>
-cd sma-trading-bot
-```
-
-2. Installez les dépendances :
-```bash
-pip install -r requirements.txt
-```
-
-## 🚀 Utilisation
-
-### Analyse du marché français
-```bash
-python FRA.py
-```
-
-### Analyse du marché américain
-```bash
-python USA.py
-```
-
-## 📈 Résultats
-
-Le programme génère :
-- **Graphiques** : Visualisation des prix et moyennes mobiles
-- **Fichiers Excel** : Historique détaillé des transactions (AIRBUS.xlsx, DXCM.xlsx)
-- **Métriques** : Capital restant et actions en portefeuille
-
-## ⚠️ Avertissement
-
-Ce projet est à des fins éducatives et de recherche uniquement. Les stratégies de trading présentées ne constituent pas des conseils financiers. Le trading comporte des risques de perte en capital.
-
-## 🔧 Configuration
-
-Vous pouvez modifier les paramètres suivants dans chaque fichier :
-- **Symboles d'actions** : Changez la variable `symbol`
-- **Période d'analyse** : Modifiez les dates `start` et `end`
-- **Capital initial** : Ajustez `transaction_amount`
-- **Fenêtres SMA** : Personnalisez les périodes des moyennes mobiles
-
-## 📝 Structure du projet
-
-```
-sma-trading-bot/
-├── FRA.py              # Stratégie marché français
-├── USA.py              # Stratégie marché américain
-├── README.md           # Documentation
-├── requirements.txt    # Dépendances Python
-├── .gitignore         # Fichiers à ignorer
-└── output/            # Fichiers générés (Excel, graphiques)
-```
-
-## 🤝 Contribution
-
-Les contributions sont les bienvenues ! N'hésitez pas à ouvrir une issue ou soumettre une pull request.
-
-## 📄 Licence
-
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
+---
